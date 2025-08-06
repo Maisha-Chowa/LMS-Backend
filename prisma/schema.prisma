@@ -1,0 +1,265 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+  GUEST
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentType {
+  VIDEO
+  TEXT
+  PDF
+  QUIZ
+  ASSIGNMENT
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  SHORT_ANSWER
+  ESSAY
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  role          UserRole @default(STUDENT)
+  firstName     String?
+  lastName      String?
+  avatar        String?
+  isVerified    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // // Relations
+  // createdCourses    Course[]       @relation("CourseInstructor")
+  // enrollments       Enrollment[]
+  // quizAttempts      QuizAttempt[]
+  // discussions       Discussion[]
+  // sentMessages      Message[]      @relation("MessageSender")
+  // receivedMessages  Message[]      @relation("MessageReceiver")
+  // notifications     Notification[]
+
+  @@map("users")
+}
+
+// model Course {
+//   id          String       @id @default(cuid())
+//   title       String
+//   description String?
+//   thumbnail   String?
+//   price       Decimal?     @db.Decimal(10, 2)
+//   status      CourseStatus @default(DRAFT)
+//   instructorId String
+//   categoryId  String?
+//   createdAt   DateTime     @default(now())
+//   updatedAt   DateTime     @updatedAt
+
+//   // Relations
+//   instructor  User         @relation("CourseInstructor", fields: [instructorId], references: [id])
+//   category    Category?    @relation(fields: [categoryId], references: [id])
+//   modules     Module[]
+//   enrollments Enrollment[]
+//   discussions Discussion[]
+
+//   @@map("courses")
+// }
+
+// model Category {
+//   id          String   @id @default(cuid())
+//   name        String   @unique
+//   description String?
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   // Relations
+//   courses Course[]
+
+//   @@map("categories")
+// }
+
+// model Module {
+//   id        String   @id @default(cuid())
+//   title     String
+//   order     Int
+//   courseId  String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // Relations
+//   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+//   lessons  Lesson[]
+
+//   @@map("modules")
+// }
+
+// model Lesson {
+//   id           String      @id @default(cuid())
+//   title        String
+//   content      String?
+//   contentType  ContentType @default(TEXT)
+//   videoUrl     String?
+//   fileUrl      String?
+//   order        Int
+//   moduleId     String
+//   createdAt    DateTime    @default(now())
+//   updatedAt    DateTime    @updatedAt
+
+//   // Relations
+//   module       Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+//   quizzes      Quiz[]
+//   assignments  Assignment[]
+
+//   @@map("lessons")
+// }
+
+// model Enrollment {
+//   id         String    @id @default(cuid())
+//   userId     String
+//   courseId   String
+//   enrolledAt DateTime  @default(now())
+//   completedAt DateTime?
+//   progress   Int       @default(0)
+
+//   // Relations
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+//   @@unique([userId, courseId])
+//   @@map("enrollments")
+// }
+
+// model Quiz {
+//   id          String   @id @default(cuid())
+//   title       String
+//   instructions String?
+//   timeLimit   Int?     // in minutes
+//   lessonId    String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   // Relations
+//   lesson      Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+//   questions   Question[]
+//   attempts    QuizAttempt[]
+
+//   @@map("quizzes")
+// }
+
+// model Question {
+//   id            String       @id @default(cuid())
+//   questionText  String
+//   questionType  QuestionType
+//   options       String[]     // JSON array for multiple choice
+//   correctAnswer String?
+//   points        Int          @default(1)
+//   quizId        String
+//   createdAt     DateTime     @default(now())
+//   updatedAt     DateTime     @updatedAt
+
+//   // Relations
+//   quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+//   @@map("questions")
+// }
+
+// model QuizAttempt {
+//   id        String   @id @default(cuid())
+//   userId    String
+//   quizId    String
+//   score     Int?
+//   submittedAt DateTime @default(now())
+
+//   // Relations
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+//   @@map("quiz_attempts")
+// }
+
+// model Assignment {
+//   id          String   @id @default(cuid())
+//   title       String
+//   description String?
+//   dueDate     DateTime?
+//   lessonId    String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   // Relations
+//   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+//   @@map("assignments")
+// }
+
+// model Discussion {
+//   id        String   @id @default(cuid())
+//   title     String
+//   content   String
+//   userId    String
+//   courseId  String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // Relations
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+//   @@map("discussions")
+// }
+
+// model Message {
+//   id          String   @id @default(cuid())
+//   senderId    String
+//   recipientId String
+//   subject     String?
+//   content     String
+//   isRead      Boolean  @default(false)
+//   sentAt      DateTime @default(now())
+
+//   // Relations
+//   sender    User @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+//   recipient User @relation("MessageReceiver", fields: [recipientId], references: [id], onDelete: Cascade)
+
+//   @@map("messages")
+// }
+
+// model Notification {
+//   id        String   @id @default(cuid())
+//   userId    String
+//   type      String
+//   title     String
+//   content   String
+//   isRead    Boolean  @default(false)
+//   createdAt DateTime @default(now())
+
+//   // Relations
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@map("notifications")
+// }
