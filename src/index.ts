@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import { globalErrorHandler } from './globalErrorHandler/globalErrorHandler';
+import { userRoutes } from './app/user/user.route';
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 // app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/users', userRoutes);
 
 // Health check route
 app.get('/health', (req: Request, res: Response) => {

@@ -5,6 +5,18 @@ export interface AppError extends Error {
   isOperational?: boolean;
 }
 
+export class ApiError extends Error implements AppError {
+  statusCode: number;
+  isOperational: boolean;
+
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+    this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 export const globalErrorHandler = (
   error: AppError,
   req: Request,
@@ -48,4 +60,4 @@ export const globalErrorHandler = (
     message,
     ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
   });
-}; 
+};
