@@ -8,6 +8,7 @@ import {
   getUserSchema,
   deleteUserSchema,
   getAllUsersSchema,
+  createBulkUsersSchema,
 } from './user.validation';
 
 const router = express.Router();
@@ -18,6 +19,13 @@ router.post(
   handleAvatarUpload,
   validateRequest(createUserSchema),
   UserController.createUser
+);
+
+// Create multiple users in bulk
+router.post(
+  '/bulk',
+  validateRequest(createBulkUsersSchema),
+  UserController.createBulkUsers
 );
 
 // Get all users with filtering and pagination

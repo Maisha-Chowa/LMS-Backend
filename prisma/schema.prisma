@@ -43,7 +43,7 @@ enum QuestionType {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String   @id @default(uuid())
   email         String   @unique
   password      String
   role          UserRole @default(STUDENT)
@@ -56,7 +56,7 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // // Relations
-  // createdCourses    Course[]       @relation("CourseInstructor")
+  createdCourses    Course[]       @relation("CourseInstructor")
   // enrollments       Enrollment[]
   // quizAttempts      QuizAttempt[]
   // discussions       Discussion[]
@@ -67,43 +67,43 @@ model User {
   @@map("users")
 }
 
-// model Course {
-//   id          String       @id @default(cuid())
-//   title       String
-//   description String?
-//   thumbnail   String?
-//   price       Decimal?     @db.Decimal(10, 2)
-//   status      CourseStatus @default(DRAFT)
-//   instructorId String
-//   categoryId  String?
-//   createdAt   DateTime     @default(now())
-//   updatedAt   DateTime     @updatedAt
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  thumbnail   String?
+  price       Decimal?     @db.Decimal(10, 2)
+  status      CourseStatus @default(DRAFT)
+  instructorId String
+  categoryId  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
-//   // Relations
-//   instructor  User         @relation("CourseInstructor", fields: [instructorId], references: [id])
-//   category    Category?    @relation(fields: [categoryId], references: [id])
-//   modules     Module[]
-//   enrollments Enrollment[]
-//   discussions Discussion[]
+  // Relations
+  instructor  User         @relation("CourseInstructor", fields: [instructorId], references: [id])
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  // modules     Module[]
+  // enrollments Enrollment[]
+  // discussions Discussion[]
 
-//   @@map("courses")
-// }
+  @@map("courses")
+}
 
-// model Category {
-//   id          String   @id @default(cuid())
-//   name        String   @unique
-//   description String?
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-//   // Relations
-//   courses Course[]
+  // Relations
+  courses Course[]
 
-//   @@map("categories")
-// }
+  @@map("categories")
+}
 
 // model Module {
-//   id        String   @id @default(cuid())
+//   id        String   @id @default(uuid())
 //   title     String
 //   order     Int
 //   courseId  String
@@ -118,7 +118,7 @@ model User {
 // }
 
 // model Lesson {
-//   id           String      @id @default(cuid())
+//   id           String      @id @default(uuid())
 //   title        String
 //   content      String?
 //   contentType  ContentType @default(TEXT)
@@ -138,7 +138,7 @@ model User {
 // }
 
 // model Enrollment {
-//   id         String    @id @default(cuid())
+//   id         String    @id @default(uuid())
 //   userId     String
 //   courseId   String
 //   enrolledAt DateTime  @default(now())
@@ -154,7 +154,7 @@ model User {
 // }
 
 // model Quiz {
-//   id          String   @id @default(cuid())
+//   id          String   @id @default(uuid())
 //   title       String
 //   instructions String?
 //   timeLimit   Int?     // in minutes
@@ -171,7 +171,7 @@ model User {
 // }
 
 // model Question {
-//   id            String       @id @default(cuid())
+//   id            String       @id @default(uuid())
 //   questionText  String
 //   questionType  QuestionType
 //   options       String[]     // JSON array for multiple choice
@@ -188,7 +188,7 @@ model User {
 // }
 
 // model QuizAttempt {
-//   id        String   @id @default(cuid())
+//   id        String   @id @default(uuid())
 //   userId    String
 //   quizId    String
 //   score     Int?
@@ -202,7 +202,7 @@ model User {
 // }
 
 // model Assignment {
-//   id          String   @id @default(cuid())
+//   id          String   @id @default(uuid())
 //   title       String
 //   description String?
 //   dueDate     DateTime?
@@ -217,7 +217,7 @@ model User {
 // }
 
 // model Discussion {
-//   id        String   @id @default(cuid())
+//   id        String   @id @default(uuid())
 //   title     String
 //   content   String
 //   userId    String
@@ -233,7 +233,7 @@ model User {
 // }
 
 // model Message {
-//   id          String   @id @default(cuid())
+//   id          String   @id @default(uuid())
 //   senderId    String
 //   recipientId String
 //   subject     String?
@@ -249,7 +249,7 @@ model User {
 // }
 
 // model Notification {
-//   id        String   @id @default(cuid())
+//   id        String   @id @default(uuid())
 //   userId    String
 //   type      String
 //   title     String

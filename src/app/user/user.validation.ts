@@ -68,3 +68,24 @@ export const getAllUsersSchema = z.object({
     sortOrder: z.enum(['asc', 'desc']).optional(),
   }),
 });
+
+// Bulk create users validation schema
+export const createBulkUsersSchema = z.object({
+  body: z.array(
+    z.object({
+      email: z
+        .string({ required_error: 'Email is required' })
+        .email('Invalid email format'),
+      password: z
+        .string({ required_error: 'Password is required' })
+        .min(6, 'Password must be at least 6 characters')
+        .max(100, 'Password cannot exceed 100 characters'),
+      role: z.nativeEnum(UserRole).optional(),
+      firstName: z.string().optional(),
+      lastName: z.string().optional(),
+      avatar: z.string().url('Invalid URL format').optional(),
+      isVerified: z.boolean().optional(),
+      isActive: z.boolean().optional(),
+    })
+  ).min(1, 'At least one user is required').max(100, 'Maximum 100 users can be created at once'),
+});

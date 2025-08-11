@@ -17,14 +17,25 @@ export class ApiError extends Error implements AppError {
   }
 }
 
+export class BulkOperationError extends ApiError {
+  results: any;
+
+  constructor(message: string, statusCode: number, results: any) {
+    super(message, statusCode);
+    this.name = 'BulkOperationError';
+    this.results = results;
+  }
+}
+
 export const globalErrorHandler = (
-  error: AppError,
+  error: AppError & { results?: any },
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'Internal Server Error';
+  let additionalData = {};
 
   // Handle Prisma errors
   if (error.name === 'PrismaClientKnownRequestError') {
@@ -50,6 +61,13 @@ export const globalErrorHandler = (
     message = 'Token expired';
   }
 
+  // Handle bulk operation errors
+  if (error.name === 'BulkOperationError' && error.results) {
+    additionalData = { results: error.results };
+    // For bulk operations, we might want to return a partial success
+    statusCode = 207; // Multi-Status
+  }
+
   // Log error in development
   if (process.env.NODE_ENV === 'development') {
     console.error('Error:', error);
@@ -58,6 +76,7 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
+    ...additionalData,
     ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
   });
 };

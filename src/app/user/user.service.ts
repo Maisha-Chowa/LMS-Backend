@@ -195,7 +195,9 @@ const deleteUser = async (id: string): Promise<User> => {
 /**
  * Create multiple users in bulk
  */
-const createBulkUsers = async (usersData: ICreateUser[]): Promise<{
+const createBulkUsers = async (
+  usersData: ICreateUser[]
+): Promise<{
   successful: User[];
   failed: { user: ICreateUser; error: string }[];
   totalSuccess: number;
@@ -209,7 +211,7 @@ const createBulkUsers = async (usersData: ICreateUser[]): Promise<{
   };
 
   // Get all emails from the input data
-  const emails = usersData.map(user => user.email);
+  const emails = usersData.map((user) => user.email);
 
   // Check for duplicate emails within the input data
   const duplicateEmails = emails.filter(
@@ -235,7 +237,7 @@ const createBulkUsers = async (usersData: ICreateUser[]): Promise<{
     },
   });
 
-  const existingEmails = existingUsers.map(user => user.email);
+  const existingEmails = existingUsers.map((user) => user.email);
 
   // Process each user
   for (const userData of usersData) {

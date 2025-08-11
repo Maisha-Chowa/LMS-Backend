@@ -120,8 +120,30 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+/**
+ * Create multiple users in bulk
+ * @route POST /api/v1/users/bulk
+ */
+const createBulkUsers = catchAsync(async (req: Request, res: Response) => {
+  const usersData = req.body;
+  const result = await UserService.createBulkUsers(usersData);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 201,
+    message: 'Bulk user creation completed',
+    data: {
+      successful: result.successful,
+      failed: result.failed,
+      totalSuccess: result.totalSuccess,
+      totalFailed: result.totalFailed,
+    },
+  });
+});
+
 export const UserController = {
   createUser,
+  createBulkUsers,
   getAllUsers,
   getUserById,
   updateUser,
