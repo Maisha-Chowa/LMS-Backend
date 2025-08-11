@@ -192,8 +192,91 @@ const deleteUser = async (id: string): Promise<User> => {
   return excludeUserFields(deletedUser, ['password']) as User;
 };
 
+/**
+ * Create multiple users in bulk
+ */
+const createBulkUsers = async (usersData: ICreateUser[]): Promise<{
+  successful: User[];
+  failed: { user: ICreateUser; error: string }[];
+  totalSuccess: number;
+  totalFailed: number;
+}> => {
+  const results = {
+    successful: [] as User[],
+    failed: [] as { user: ICreateUser; error: string }[],
+    totalSuccess: 0,
+    totalFailed: 0,
+  };
+
+  // Get all emails from the input data
+  const emails = usersData.map(user => user.email);
+
+  // Check for duplicate emails within the input data
+  const duplicateEmails = emails.filter(
+    (email, index) => emails.indexOf(email) !== index
+  );
+
+  if (duplicateEmails.length > 0) {
+    throw new ApiError(
+      `Duplicate emails found in input data: ${duplicateEmails.join(', ')}`,
+      400
+    );
+  }
+
+  // Check which emails already exist in the database
+  const existingUsers = await prisma.user.findMany({
+    where: {
+      email: {
+        in: emails,
+      },
+    },
+    select: {
+      email: true,
+    },
+  });
+
+  const existingEmails = existingUsers.map(user => user.email);
+
+  // Process each user
+  for (const userData of usersData) {
+    try {
+      // Skip users with emails that already exist
+      if (existingEmails.includes(userData.email)) {
+        results.failed.push({
+          user: userData,
+          error: `User with email ${userData.email} already exists`,
+        });
+        results.totalFailed++;
+        continue;
+      }
+
+      // Hash password
+      if (userData.password) {
+        userData.password = await hashPassword(userData.password);
+      }
+
+      // Create user
+      const user = await prisma.user.create({
+        data: userData,
+      });
+
+      results.successful.push(excludeUserFields(user, ['password']) as User);
+      results.totalSuccess++;
+    } catch (error) {
+      results.failed.push({
+        user: userData,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      results.totalFailed++;
+    }
+  }
+
+  return results;
+};
+
 export const UserService = {
   createUser,
+  createBulkUsers,
   getAllUsers,
   getUserById,
   updateUser,

@@ -1,0 +1,110 @@
+[
+  {
+    "email": "admin@lms.com",
+    "password": "Admin123!",
+    "role": "ADMIN",
+    "firstName": "Admin",
+    "lastName": "User",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "instructor1@lms.com",
+    "password": "Teach123!",
+    "role": "INSTRUCTOR",
+    "firstName": "John",
+    "lastName": "Smith",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "instructor2@lms.com",
+    "password": "Teach456!",
+    "role": "INSTRUCTOR",
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "student1@lms.com",
+    "password": "Learn123!",
+    "role": "STUDENT",
+    "firstName": "Michael",
+    "lastName": "Brown",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "student2@lms.com",
+    "password": "Learn456!",
+    "role": "STUDENT",
+    "firstName": "Emily",
+    "lastName": "Davis",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "student3@lms.com",
+    "password": "Learn789!",
+    "role": "STUDENT",
+    "firstName": "David",
+    "lastName": "Wilson",
+    "isVerified": false,
+    "isActive": true
+  },
+  {
+    "email": "student4@lms.com",
+    "password": "Learn101!",
+    "role": "STUDENT",
+    "firstName": "Jessica",
+    "lastName": "Martinez",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "student5@lms.com",
+    "password": "Learn202!",
+    "role": "STUDENT",
+    "firstName": "James",
+    "lastName": "Taylor",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "instructor3@lms.com",
+    "password": "Teach789!",
+    "role": "INSTRUCTOR",
+    "firstName": "Robert",
+    "lastName": "Anderson",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "superadmin@lms.com",
+    "password": "Super123!",
+    "role": "SUPER_ADMIN",
+    "firstName": "Super",
+    "lastName": "Admin",
+    "isVerified": true,
+    "isActive": true
+  },
+  {
+    "email": "guest1@example.com",
+    "password": "Guest123!",
+    "role": "GUEST",
+    "firstName": "Guest",
+    "lastName": "User",
+    "isVerified": false,
+    "isActive": true
+  },
+  {
+    "email": "inactive@lms.com",
+    "password": "Inactive123!",
+    "role": "STUDENT",
+    "firstName": "Inactive",
+    "lastName": "User",
+    "isVerified": true,
+    "isActive": false
+  }
+]

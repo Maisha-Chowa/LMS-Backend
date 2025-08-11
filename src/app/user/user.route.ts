@@ -14,7 +14,7 @@ const router = express.Router();
 
 // Create a new user
 router.post(
-  '/',
+  '/create-user',
   handleAvatarUpload,
   validateRequest(createUserSchema),
   UserController.createUser
