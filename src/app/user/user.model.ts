@@ -1,4 +1,5 @@
 import { PrismaClient, User, UserRole } from '@prisma/client';
+import { IPaginationOptions, IQueryResult } from '../../shared/searchAndFilter';
 
 const prisma = new PrismaClient();
 
@@ -34,19 +35,10 @@ export interface IUserFilters {
   isActive?: boolean;
 }
 
-// Pagination options
-export interface IPaginationOptions {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-}
-
-export interface IUserQueryResult {
+// User query result interface
+export interface IUserQueryResult extends IQueryResult<User> {
+  data: User[];
   users: User[];
-  total: number;
-  page: number;
-  limit: number;
 }
 
 export const UserModel = {

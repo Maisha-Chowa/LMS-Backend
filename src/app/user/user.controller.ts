@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { catchAsync } from '../../shared/catchAsync';
 import { sendResponse } from '../../shared/sendResponse';
-import { IUserFilters, IPaginationOptions } from './user.model';
+import { IUserFilters } from './user.model';
+import { IPaginationOptions } from '../../shared/searchAndFilter';
 import { UserRole } from '@prisma/client';
 
 /**

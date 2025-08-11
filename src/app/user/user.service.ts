@@ -4,16 +4,19 @@ import {
   ICreateUser,
   IUpdateUser,
   IUserFilters,
-  IPaginationOptions,
   IUserQueryResult,
 } from './user.model';
 import {
   hashPassword,
   buildUserQueryConditions,
-  buildPaginationOptions,
   excludeUserFields,
 } from './user.utils';
 import { deleteFromCloudinary, getPublicIdFromUrl } from './user.upload';
+import {
+  buildPaginationOptions,
+  executeQuery,
+  IPaginationOptions,
+} from '../../shared/searchAndFilter';
 
 const prisma = new PrismaClient();
 
@@ -50,45 +53,42 @@ const getAllUsers = async (
   filters: IUserFilters,
   paginationOptions: IPaginationOptions
 ): Promise<IUserQueryResult> => {
-  const { searchTerm, role, isVerified, isActive } = filters;
-  const { page = 1, limit = 10 } = paginationOptions;
-
   // Build query conditions
   const whereConditions = buildUserQueryConditions(filters);
 
-  // Build pagination options
-  const { skip, take, orderBy } = buildPaginationOptions(paginationOptions);
+  // Define select fields to exclude password
+  const selectFields = {
+    id: true,
+    email: true,
+    role: true,
+    firstName: true,
+    lastName: true,
+    avatar: true,
+    isVerified: true,
+    isActive: true,
+    createdAt: true,
+    updatedAt: true,
+    password: false,
+  };
 
-  // Get users with count
-  const [users, total] = await Promise.all([
-    prisma.user.findMany({
-      where: whereConditions,
-      skip,
-      take,
-      orderBy,
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        firstName: true,
-        lastName: true,
-        avatar: true,
-        isVerified: true,
-        isActive: true,
-        createdAt: true,
-        updatedAt: true,
-        // Exclude password
-        password: false,
-      },
-    }),
-    prisma.user.count({ where: whereConditions }),
-  ]);
+  // Use the shared utility to execute the query
+  const result = await executeQuery<User>(
+    (args) =>
+      prisma.user.findMany({
+        ...args,
+        select: selectFields,
+      }),
+    (args) => prisma.user.count(args),
+    whereConditions,
+    paginationOptions
+  );
 
   return {
-    users: users as User[],
-    total,
-    page,
-    limit,
+    data: result.data,
+    users: result.data,
+    total: result.total,
+    page: result.page,
+    limit: result.limit,
   };
 };
 

@@ -1,6 +1,7 @@
 import { User, Prisma, UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { IUserFilters, IPaginationOptions } from './user.model';
+import { IUserFilters } from './user.model';
+import { buildWhereConditions } from '../../shared/searchAndFilter';
 
 /**
  * Hash a password using bcrypt
@@ -42,57 +43,21 @@ export const excludeUserFields = <User, Key extends keyof User>(
 export const buildUserQueryConditions = (
   filters: IUserFilters
 ): Prisma.UserWhereInput => {
-  const { searchTerm, role, isVerified, isActive } = filters;
-  const conditions: Prisma.UserWhereInput = {};
+  // Define search fields
+  const searchFields = ['email', 'firstName', 'lastName'];
 
-  // Add search term condition
-  if (searchTerm) {
-    conditions.OR = [
-      { email: { contains: searchTerm, mode: 'insensitive' } },
-      { firstName: { contains: searchTerm, mode: 'insensitive' } },
-      { lastName: { contains: searchTerm, mode: 'insensitive' } },
-    ];
-  }
-
-  // Add role condition
-  if (role) {
-    conditions.role = role;
-  }
-
-  // Add isVerified condition
-  if (isVerified !== undefined) {
-    conditions.isVerified = isVerified;
-  }
-
-  // Add isActive condition
-  if (isActive !== undefined) {
-    conditions.isActive = isActive;
-  }
-
-  return conditions;
-};
-
-/**
- * Build Prisma query options for pagination and sorting
- */
-export const buildPaginationOptions = (
-  options: IPaginationOptions
-): {
-  skip: number;
-  take: number;
-  orderBy: Prisma.UserOrderByWithRelationInput;
-} => {
-  const page = options.page || 1;
-  const limit = options.limit || 10;
-  const skip = (page - 1) * limit;
-  const sortBy = options.sortBy || 'createdAt';
-  const sortOrder = options.sortOrder || 'desc';
-
-  return {
-    skip,
-    take: limit,
-    orderBy: {
-      [sortBy]: sortOrder,
-    },
+  // Define exact match fields mapping
+  const exactMatchFields = {
+    role: 'role',
+    isVerified: 'isVerified',
+    isActive: 'isActive',
   };
+
+  // Use the shared utility to build conditions
+  return buildWhereConditions({
+    searchTerm: filters.searchTerm,
+    searchFields,
+    exactMatchFields,
+    filters,
+  });
 };
