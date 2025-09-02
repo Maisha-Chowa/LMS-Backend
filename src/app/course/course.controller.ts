@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { CourseService } from './course.service';
 import { catchAsync } from '../../shared/catchAsync';
 import { sendResponse } from '../../shared/sendResponse';
-import { ICourseFilters, IPaginationOptions } from './course.model';
+import { ICourseFilters } from './course.model';
 import { CourseStatus } from '@prisma/client';
+import { IPaginationOptions } from '@/shared/searchAndFilter';
 
 // Define a custom interface for the request with user
 interface AuthRequest extends Request {

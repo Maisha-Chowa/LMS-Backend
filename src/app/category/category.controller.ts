@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { CategoryService } from './category.service';
 import { catchAsync } from '../../shared/catchAsync';
 import { sendResponse } from '../../shared/sendResponse';
-import { ICategoryFilters, IPaginationOptions } from './category.model';
+import { ICategoryFilters } from './category.model';
+import { IPaginationOptions } from '../../shared/searchAndFilter';
 
 /**
  * Create a new category

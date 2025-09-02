@@ -107,6 +107,7 @@ const getAllCourses = async (
   );
 
   return {
+    data: result.data,
     courses: result.data,
     total: result.total,
     page: result.page,

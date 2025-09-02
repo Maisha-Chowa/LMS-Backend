@@ -1,5 +1,5 @@
 import { PrismaClient, Category } from '@prisma/client';
-import { IPaginationOptions, IQueryResult } from '../../shared/searchAndFilter';
+import { IQueryResult } from '../../shared/searchAndFilter';
 
 const prisma = new PrismaClient();
 
