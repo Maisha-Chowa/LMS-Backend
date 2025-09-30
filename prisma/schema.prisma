@@ -45,12 +45,15 @@ enum QuestionType {
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
-  password      String
+  password      String?  // Optional for Firebase auth users
+  firebaseUid   String?  @unique // Firebase user ID
   role          UserRole @default(STUDENT)
   firstName     String?
   lastName      String?
+  name          String?  // Full name for Firebase users
   avatar        String?
-  isVerified    Boolean  @default(false)
+  phoneNumber   String?  @unique // For phone authentication
+  emailVerified Boolean  @default(false) // Firebase email verification status
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
